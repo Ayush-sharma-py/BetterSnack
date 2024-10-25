@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
- 
+# Modify with this logic https://stackoverflow.com/questions/70735293/using-difflib-to-compare-a-string-with-a-row-in-a-dataframe
 def lookupProductName(df, productName):
     outputDataFrame = df[df['product_name'].str.contains(productName, case=False, na=False)]
     return outputDataFrame
@@ -16,3 +16,9 @@ outputRow = lookupProductName(df[["product_name", "nova_group", "brands",
                                   "energy_100g"]], productName)
 
 st.write(outputRow.iloc[0:100])
+
+
+
+
+
+st.caption(":blue[Nova Group] refers to how processed it is")
