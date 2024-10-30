@@ -6,7 +6,7 @@ import pandas as pd
 
 # Deltas
 brandThreshold = 75
-productNameThreshold = 85
+productNameThreshold = 55
 
 
 # This function is used to load data and cache it
@@ -44,14 +44,37 @@ def filterBrand(df, brandName: str, threshold):
         # Calculate scores using a vectorized approach
         brandScores = np.vectorize(lambda e: fuzz.ratio(brandName, e))(brand_names)
         df['brandScore'] = brandScores
-        df = df[df['brandScore'] > threshold].sort_values(by = ['brandScore'], ascending=False)
+        df = df[df['brandScore'] > threshold].sort_values(by = ['brandScore', 'score'], ascending=False)
     
     return df
 
-    
-    
-        
-    
+def lookupBestMatch(df):
+    if(len(df) == 0):
+        st.write("Product not found!!")
+    dfWithNova = df[df["nova_group"].notna()]
+    print(dfWithNova)
+    if(len(dfWithNova) == 0):
+        return df.iloc[0]
+    else:
+        return dfWithNova.iloc[0]
+
+def printRow(df):
+    backGroundColor = ["#4CAF50", "#A8D500", "#FFEB3B", "#FF9800", "#C62828"]
+    foreGroundColor = ["#A8E6CF", "#D0E4A7", "#FFF9C4", "#FFCCBC", "#FFABAB"]
+    novaGroup = int(df["nova_group"])
+
+    st.html(f'''
+<div style="display: flex; justify-content: flex-end;">
+    <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 1]}; 
+                color: white; display: flex; align-items: center; 
+                justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 1]}; 
+                border-radius: 20px; /* Make the corners rounded */
+                margin: 20px;">
+        {novaGroup}
+    </div>
+</div>
+''')
+    return None
 
 
 # Loading the cache
@@ -68,7 +91,9 @@ if(len(productName) > 0):
     if(len(brandName) > 0):
         outputRow = filterBrand(outputRow, brandName.lower(), brandThreshold)
 
-    st.dataframe(outputRow)
+    bestRow = lookupBestMatch(outputRow)
+    printRow(bestRow)
+    st.dataframe(bestRow)
 
 
 st.caption(":blue[Nova Group] refers to how processed it is")
