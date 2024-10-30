@@ -62,8 +62,13 @@ def printRow(df):
     backGroundColor = ["#4CAF50", "#A8D500", "#FFEB3B", "#FF9800", "#C62828"]
     foreGroundColor = ["#A8E6CF", "#D0E4A7", "#FFF9C4", "#FFCCBC", "#FFABAB"]
     novaGroup = int(df["nova_group"])
+    if(df["brands"] != None):
+        productName = str(df["brands"]).title() + " " + str(df["product_name"]).title()
+    else:
+        productName = str(df["product_name"]).title()
 
     st.html(f'''
+    {productName}
 <div style="display: flex; justify-content: flex-end;">
     <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 1]}; 
                 color: white; display: flex; align-items: center; 
@@ -75,6 +80,19 @@ def printRow(df):
 </div>
 ''')
     return None
+
+# This is used the gradient background
+st.html(
+    """
+    <style>
+    .stApp {
+        background: linear-gradient(90deg, #000000, #434343);
+        height: 100vh;
+        color: white;
+    }
+    </style>
+    """
+)
 
 
 # Loading the cache
