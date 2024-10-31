@@ -49,10 +49,7 @@ def filterBrand(df, brandName: str, threshold):
     return df
 
 def lookupBestMatch(df):
-    if(len(df) == 0):
-        st.write("Product not found!!")
     dfWithNova = df[df["nova_group"].notna()]
-    print(dfWithNova)
     if(len(dfWithNova) == 0):
         return df.iloc[0]
     else:
@@ -61,38 +58,48 @@ def lookupBestMatch(df):
 def printRow(df):
     backGroundColor = ["#4CAF50", "#A8D500", "#FFEB3B", "#FF9800", "#C62828"]
     foreGroundColor = ["#A8E6CF", "#D0E4A7", "#FFF9C4", "#FFCCBC", "#FFABAB"]
-    novaGroup = int(df["nova_group"])
+    novaGroup = df["nova_group"]
+    
     if(df["brands"] != None):
         productName = str(df["brands"]).title() + " " + str(df["product_name"]).title()
     else:
         productName = str(df["product_name"]).title()
+    try:
+        novaGroup = int(novaGroup)
 
-    st.html(f'''
-    {productName}
-<div style="display: flex; justify-content: flex-end;">
-    <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 1]}; 
-                color: white; display: flex; align-items: center; 
-                justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 1]}; 
-                border-radius: 20px; /* Make the corners rounded */
-                margin: 20px;">
-        {novaGroup}
-    </div>
-</div>
-''')
+        st.html(f'''
+            {productName}
+        <div style="display: flex; justify-content: flex-end;">
+            <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 1]}; 
+                        color: white; display: flex; align-items: center; 
+                        justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 1]}; 
+                        border-radius: 20px; /* Make the corners rounded */
+                        margin: 20px;">
+                {novaGroup}
+            </div>
+        </div>
+        ''')
+
+        tags = ["Python", "Streamlit", "Data Science", "Machine Learning"]
+
+        # Display tags santize
+        for tag in tags:
+            st.markdown(f"<span style='color: #0072B8; background-color: #E6F7FF; border-radius: 3px; padding: 5px;'>{tag}</span>", unsafe_allow_html=True)
+    except:
+        st.html(f'''
+            {productName}
+        <div style="display: flex; justify-content: flex-end;">
+            <div style="width: 100px; height: 100px; background-color: #808080; 
+                        color: white; display: flex; align-items: center; 
+                        justify-content: center; border: 4px solid #5A5A5A; 
+                        border-radius: 20px; /* Make the corners rounded */
+                        margin: 20px;">
+                - - -
+            </div>
+        </div>
+        ''')
     return None
 
-# This is used the gradient background
-st.html(
-    """
-    <style>
-    .stApp {
-        background: linear-gradient(90deg, #000000, #434343);
-        height: 100vh;
-        color: white;
-    }
-    </style>
-    """
-)
 
 
 # Loading the cache
@@ -110,8 +117,11 @@ if(len(productName) > 0):
         outputRow = filterBrand(outputRow, brandName.lower(), brandThreshold)
 
     bestRow = lookupBestMatch(outputRow)
-    printRow(bestRow)
-    st.dataframe(bestRow)
+    if(len(bestRow) != 0):
+        printRow(bestRow)
+        st.dataframe(bestRow)
+    else:
+        st.write("Product not found!")
 
 
 st.caption(":blue[Nova Group] refers to how processed it is")
