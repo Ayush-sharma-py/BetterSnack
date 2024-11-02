@@ -14,7 +14,7 @@ productNameThreshold = 55
 def load_data():
     # Load and process data here
     with st.spinner():
-        df = pd.read_csv("filtered.csv")
+        df = pd.read_csv("Files//filtered.csv")
         
         df = df[df["product_name"].notna()]
 
