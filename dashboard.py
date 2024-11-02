@@ -22,7 +22,7 @@ def load_data():
         df['brands'] = df['brands'].str.lower()
 
     return df[["product_name", "nova_group", "brands", 
-            "quantity", "categories", "nutriscore_score", 
+            "quantity", "categories", "nutriscore_score", "nutriscore_grade",
             "energy_100g"]]
 
 # Testing better algorithms to match names
@@ -50,55 +50,81 @@ def filterBrand(df, brandName: str, threshold):
 
 def lookupBestMatch(df):
     dfWithNova = df[df["nova_group"].notna()]
-    if(len(dfWithNova) == 0):
+    if(len(dfWithNova) != 0):
+        return dfWithNova.iloc[0]
+    elif(len(df) != 0):
         return df.iloc[0]
     else:
-        return dfWithNova.iloc[0]
+        # Sends back empty df to compare
+        return df
+
 
 def printRow(df):
-    backGroundColor = ["#4CAF50", "#A8D500", "#FFEB3B", "#FF9800", "#C62828"]
+    backGroundColor = ["#4CAF50", "#A8D500", "#FFEB3B", "#FF9820", "#C62828"]
     foreGroundColor = ["#A8E6CF", "#D0E4A7", "#FFF9C4", "#FFCCBC", "#FFABAB"]
     novaGroup = df["nova_group"]
     
-    if(df["brands"] != None):
-        productName = str(df["brands"]).title() + " " + str(df["product_name"]).title()
+    if(not pd.isna(df["brands"])):
+        productName = str(df["product_name"]).title()
+        brandName = str(df["brands"]).title()
+        st.html(f'''
+                <div style='display: flex; justify-content: center;'>
+                    <h1 style="color: #0072B8; margin-right: 10px"> {brandName} </h1>
+                    <h1> {productName} </h1>
+                </div>    
+                ''')
     else:
         productName = str(df["product_name"]).title()
-    try:
+        st.html(f'''<center> <h1 style="color: #00000;"> {productName} </h1> </center>''')
+
+    if(not pd.isna(novaGroup)):
         novaGroup = int(novaGroup)
+        novaTag = str(novaGroup)
+    else:
+        novaGroup = -1
+        novaTag = '- - -'
 
-        st.html(f'''
-            {productName}
-        <div style="display: flex; justify-content: flex-end;">
-            <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 1]}; 
-                        color: white; display: flex; align-items: center; 
-                        justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 1]}; 
-                        border-radius: 20px; /* Make the corners rounded */
-                        margin: 20px;">
-                {novaGroup}
-            </div>
+    st.html(f'''
+    <div style="display: flex; justify-content: center;">
+        <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 1]}; 
+                    color: white; display: flex; align-items: center; 
+                    justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 1]}; 
+                    border-radius: 20px; margin: 20px;">
+            {novaTag}
         </div>
-        ''')
+        <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 2]}; 
+                    color: white; display: flex; align-items: center; 
+                    justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 2]}; 
+                    border-radius: 20px; margin: 20px;">
+            {novaTag}
+        </div>
+        <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 3]}; 
+                    color: white; display: flex; align-items: center; 
+                    justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 3]}; 
+                    border-radius: 20px; margin: 20px;">
+            {novaTag}
+        </div>
+    </div>
+    ''')
 
-        tags = ["Python", "Streamlit", "Data Science", "Machine Learning"]
+    tags = df['categories']
+    #print(tags)
+
+    # Sanitation when tags is nan
+    if(not pd.isna(tags)):
+        tags = tags.split(',')
 
         # Display tags santize
-        for tag in tags:
-            st.markdown(f"<span style='color: #0072B8; background-color: #E6F7FF; border-radius: 3px; padding: 5px;'>{tag}</span>", unsafe_allow_html=True)
-    except:
-        st.html(f'''
-            {productName}
-        <div style="display: flex; justify-content: flex-end;">
-            <div style="width: 100px; height: 100px; background-color: #808080; 
-                        color: white; display: flex; align-items: center; 
-                        justify-content: center; border: 4px solid #5A5A5A; 
-                        border-radius: 20px; /* Make the corners rounded */
-                        margin: 20px;">
-                - - -
-            </div>
-        </div>
-        ''')
-    return None
+        colors = ['#7cb37e', '#B3FFB3', '#B3D1FF', '#FFE1B3', '#d85831']  # Example colors for each tag
+
+        tag_html = "<div style='display: flex; flex-wrap: wrap; gap: 5px;'>"
+        for i in range(len(tags)):
+            color = colors[i % len(colors)]  # Cycle through colors
+            tag_html += f'''<span style='color: #0072B8; background-color: {color}; border-radius: 10px;
+            padding: 5px; display: inline-block; margin-right: 0px;'>{tags[i]}</span>'''
+
+        # Render the tags side by side
+        st.html(tag_html)
 
 
 
