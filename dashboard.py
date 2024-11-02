@@ -60,9 +60,12 @@ def lookupBestMatch(df):
 
 
 def printRow(df):
-    backGroundColor = ["#4CAF50", "#A8D500", "#FFEB3B", "#FF9820", "#C62828"]
-    foreGroundColor = ["#A8E6CF", "#D0E4A7", "#FFF9C4", "#FFCCBC", "#FFABAB"]
+    backGroundColor = ["#4CAF50", "#A8D500", "#FFEB3B", "#FF9820", "#696969"]
+    foreGroundColor = ["#A8E6CF", "#D0E4A7", "#FFF9C4", "#FFCCBC", "#D3D3D3"]
     novaGroup = df["nova_group"]
+    nutriScore = df["nutriscore_score"]
+    nutriGrade = df["nutriscore_grade"]
+
     
     if(not pd.isna(df["brands"])):
         productName = str(df["product_name"]).title()
@@ -81,8 +84,24 @@ def printRow(df):
         novaGroup = int(novaGroup)
         novaTag = str(novaGroup)
     else:
-        novaGroup = -1
+        novaGroup = 0
         novaTag = '- - -'
+
+    if(not pd.isna(nutriScore)):  
+        nutriScoreTag = str(int(nutriScore)) + " / 100"
+        nutriScore = int((100 - nutriScore) / 20)
+    else:
+        nutriScore = 0
+        nutriScoreTag = '- - -'
+    
+    # WHO PUTS UNKNOWN IN A DATASET JUST BE NORMAL AND PUT None or Null
+    if(not (pd.isna(nutriGrade) or nutriGrade == "unknown")):
+        nutriGradeTag = str(nutriGrade).upper()
+        print(nutriGrade)
+        nutriGrade = (ord(nutriGrade) - 96) % len(backGroundColor)
+    else:
+        nutriGrade = 0
+        nutriGradeTag = '- - -'
 
     st.html(f'''
     <div style="display: flex; justify-content: center;">
@@ -92,17 +111,17 @@ def printRow(df):
                     border-radius: 20px; margin: 20px;">
             {novaTag}
         </div>
-        <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 2]}; 
+        <div style="width: 100px; height: 100px; background-color: {backGroundColor[nutriScore - 1]}; 
                     color: white; display: flex; align-items: center; 
-                    justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 2]}; 
+                    justify-content: center; border: 4px solid {foreGroundColor[nutriScore - 1]}; 
                     border-radius: 20px; margin: 20px;">
-            {novaTag}
+            {nutriScoreTag}
         </div>
-        <div style="width: 100px; height: 100px; background-color: {backGroundColor[novaGroup - 3]}; 
+        <div style="width: 100px; height: 100px; background-color: {backGroundColor[nutriGrade - 1]}; 
                     color: white; display: flex; align-items: center; 
-                    justify-content: center; border: 4px solid {foreGroundColor[novaGroup - 3]}; 
+                    justify-content: center; border: 4px solid {foreGroundColor[nutriGrade - 1]}; 
                     border-radius: 20px; margin: 20px;">
-            {novaTag}
+            {nutriGradeTag}
         </div>
     </div>
     ''')
