@@ -8,6 +8,11 @@
 
 You can access the Better Snack application [here](https://bettersnack.streamlit.app/).
 
+## System Design
+
+![System Design](SystemDesign.png)
+
+
 ## Technologies Used
 
 - **Streamlit**: A framework for building interactive web applications in Python, enabling rapid development of data-driven apps.
