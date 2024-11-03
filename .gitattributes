@@ -7,3 +7,4 @@ Data/Files/Filtered.csv filter=lfs diff=lfs merge=lfs -text
 /Dockerfile filter=lfs diff=lfs merge=lfs -text
 *.py filter=lfs diff=lfs merge=lfs -text
 *.txt filter=lfs diff=lfs merge=lfs -text
+filtered.csv filter=lfs diff=lfs merge=lfs -text
