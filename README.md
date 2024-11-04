@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Better Snack** is a Streamlit application that helps users find and evaluate snack products based on their names and brands. It utilizes fuzzy matching algorithms to enhance product name recognition and allows filtering by brand for more precise results.
+**Better Snack** is a Streamlit application that helps users find and evaluate snack products based on their names and brands. It utilizes fuzzy matching algorithms to enhance product name recognition and allows filtering by brand for more precise results. I chose to use CSV over a RDB because this project was meant to me a practice for DE principles + ORM design with vectorization (Using numpy + pandas). However a shift to SQL Lite is planned.
 
 ## Live Application
 
@@ -45,7 +45,7 @@ pip install streamlit rapidfuzz pandas numpy
 1. **Load the Data**: The application reads the dataset from `Data/Files/filtered.csv`. Ensure this file exists and is properly formatted.
 2. **Run the App**: Use the following command to start the Streamlit application:
    ```bash
-   streamlit run app.py
+   streamlit run dashboard.py
    ```
 3. **Interact with the App**:
    - Enter a snack name in the provided input field.
@@ -87,9 +87,6 @@ docker run -p 8501:8501 -v $(pwd):/app better-snack
 
 - **Database Integration**: The application will be updated to use SQLite for storing product data. This will enhance data retrieval efficiency and allow for more complex queries.
 
-### Containerization with Docker
-
-- **Docker Support**: Future updates will include Docker support, allowing users to easily deploy the application in isolated environments. This ensures that all dependencies are packaged together, reducing compatibility issues.
 
 ### Data Updates with Apache Airflow
 
@@ -101,7 +98,7 @@ Contributions to improve the application are welcome! Feel free to fork the repo
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ---
 
